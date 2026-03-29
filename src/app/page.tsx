@@ -55,21 +55,32 @@ export default function AirPenthousesPortal() {
             </div>
           </Link>
 
-          {/* Módulo 2: Tourism (Próximamente) */}
-          <div className="rounded-3xl bg-white shadow-sm border border-slate-200 overflow-hidden flex flex-col opacity-75">
-            <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center border-b border-slate-200">
-              <MapPin className="w-16 h-16 text-slate-300" />
-              <div className="absolute top-4 right-4 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
-                Próximamente
+          {/* Módulo 2: Tourism (Activo) */}
+          <Link href="/tourism" className="group rounded-3xl bg-white shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden flex flex-col hover:-translate-y-2 transition-transform duration-500">
+            <div className="relative h-64 w-full bg-slate-900 overflow-hidden">
+              <Image 
+                src="/tourism_cover.png"
+                alt="Turismo VIP en AirPenthouses"
+                fill
+                className="object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+              <div className="absolute bottom-6 left-6 flex items-center gap-3">
+                <div className="p-2.5 bg-white/10 backdrop-blur-md rounded-xl">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Turismo VIP</h3>
               </div>
             </div>
-            <div className="p-8">
-              <h3 className="text-2xl font-bold text-slate-800 mb-3">Turismo VIP</h3>
-              <p className="text-slate-500 leading-relaxed">
-                Descubre los secretos de la ciudad con guías exclusivos y rutas privadas diseñadas para huéspedes.
+            <div className="p-8 flex-1 flex flex-col justify-between">
+              <p className="text-slate-500 leading-relaxed mb-6">
+                Descubre los secretos de la ciudad con transporte y guías exclusivos. Rutas privadas diseñadas para nuestros altos huéspedes.
               </p>
+              <div className="flex items-center text-blue-900 font-semibold group-hover:gap-2 transition-all">
+                Ingresar al módulo <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all" />
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Módulo 3: Chef (Próximamente) */}
           <div className="rounded-3xl bg-white shadow-sm border border-slate-200 overflow-hidden flex flex-col opacity-75">

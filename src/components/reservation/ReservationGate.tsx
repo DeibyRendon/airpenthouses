@@ -6,7 +6,13 @@ import { Loader2 } from "lucide-react";
 import styles from "./ReservationGate.module.css";
 import { validateReservationAction } from "@/app/actions/reservation";
 
-export default function ReservationGate() {
+export default function ReservationGate({ 
+  redirectTo = "/barbershop/services",
+  buttonText = "Validar Reserva" 
+}: { 
+  redirectTo?: string;
+  buttonText?: string;
+}) {
   const router = useRouter();
   const [reservationInput, setReservationInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +34,7 @@ export default function ReservationGate() {
       return;
     }
 
-    router.push(`/barbershop/services`);
+    router.push(redirectTo);
   };
 
   return (
@@ -59,7 +65,7 @@ export default function ReservationGate() {
           disabled={loading || !reservationInput.trim()}
           className={styles.submitBtn}
         >
-          {loading ? <Loader2 className={styles.spinner} /> : "Validar Acceso"}
+          {loading ? <Loader2 className={styles.spinnerIcon} /> : buttonText}
         </button>
       </form>
     </div>

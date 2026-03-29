@@ -42,3 +42,6 @@ next-env.d.ts
 
 # env files
 .env.local
+
+# database
+database_tourism.sql
