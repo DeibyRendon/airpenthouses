@@ -1,4 +1,4 @@
-import ReservationFlow from "@/components/reservation/ReservationFlow";
+import ReservationGate from "@/components/reservation/ReservationGate";
 
 export default function Home() {
   return (
@@ -32,7 +32,7 @@ export default function Home() {
 
         {/* Flujo Dinámico de Agendamiento */}
         <div className="w-full max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
-          <ReservationFlow />
+          <ReservationGate />
         </div>
       </section>
 

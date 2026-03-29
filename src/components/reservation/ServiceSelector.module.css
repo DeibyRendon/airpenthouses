@@ -1,0 +1,85 @@
+@reference "tailwindcss";
+
+.container {
+  @apply w-full text-left;
+}
+
+.guestBadge {
+  @apply flex items-center gap-4 mb-8 bg-slate-50 p-4 rounded-xl border border-slate-200;
+}
+
+.guestIconWrapper {
+  @apply bg-blue-100 text-blue-900 p-2.5 rounded-full ring-4 ring-white shadow-sm;
+}
+
+.guestIcon {
+  @apply w-6 h-6;
+}
+
+.guestLabel {
+  @apply text-xs font-semibold uppercase tracking-wider text-slate-500;
+}
+
+.guestName {
+  @apply text-lg font-bold text-slate-800;
+}
+
+.title {
+  @apply text-2xl font-bold text-slate-800 mb-6;
+}
+
+.serviceList {
+  @apply space-y-4;
+}
+
+.serviceButton {
+  @apply w-full flex items-center justify-between p-5 border-2 border-slate-100 bg-white rounded-2xl hover:border-blue-900 hover:bg-blue-50/30 transition-all text-left shadow-sm hover:shadow-md;
+}
+
+.serviceButtonContent {
+  @apply flex items-center gap-5;
+}
+
+.serviceIconWrapper {
+  @apply bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-slate-500 transition-colors;
+}
+
+.serviceButton:hover .serviceIconWrapper {
+  @apply bg-blue-100 text-blue-900;
+}
+
+.serviceIcon {
+  @apply w-6 h-6;
+}
+
+.serviceName {
+  @apply font-bold text-slate-800 text-lg transition-colors;
+}
+
+.serviceButton:hover .serviceName {
+  @apply text-blue-900;
+}
+
+.serviceDetails {
+  @apply font-medium text-slate-500 text-sm mt-0.5;
+}
+
+.chevronIcon {
+  @apply w-6 h-6 text-slate-300 transition-all;
+}
+
+.serviceButton:hover .chevronIcon {
+  @apply text-blue-900 translate-x-1;
+}
+
+.errorContainer {
+  @apply text-center py-10;
+}
+
+.errorMessage {
+  @apply text-red-500 font-semibold mb-4;
+}
+
+.backButton {
+  @apply text-blue-900 underline;
+}

@@ -1,0 +1,41 @@
+@reference "tailwindcss";
+
+.container {
+  @apply w-full text-left;
+}
+
+.title {
+  @apply text-2xl font-bold text-slate-800 mb-2;
+}
+
+.subtitle {
+  @apply text-sm text-slate-500 mb-6;
+}
+
+.highlight {
+  @apply font-semibold text-slate-700;
+}
+
+.form {
+  @apply space-y-5;
+}
+
+.fieldLabel {
+  @apply block text-sm font-semibold text-slate-700 mb-1;
+}
+
+.inputField {
+  @apply w-full p-4 text-lg font-medium border border-slate-300 rounded-xl focus:ring-4 focus:ring-blue-900/10 focus:border-blue-900 outline-none transition-all placeholder:font-normal bg-white;
+}
+
+.errorMessage {
+  @apply text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100;
+}
+
+.submitBtn {
+  @apply w-full bg-blue-900 text-white p-4 rounded-xl font-semibold hover:bg-blue-800 hover:shadow-lg transition-all flex justify-center items-center disabled:opacity-70 disabled:hover:shadow-none;
+}
+
+.spinner {
+  @apply animate-spin w-6 h-6;
+}
