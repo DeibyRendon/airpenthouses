@@ -48,7 +48,7 @@ export default function AppointmentCalendar({
       return;
     }
 
-    router.push(`/success?date=${selectedDate}&time=${selectedTime}`);
+    router.push(`/barbershop/success?date=${selectedDate}&time=${selectedTime}`);
   };
 
   const upcomingDays = useMemo(() => {
@@ -69,9 +69,7 @@ export default function AppointmentCalendar({
 
   return (
     <div className={styles.container}>
-      <button onClick={() => router.back()} className={styles.backBtn}>
-        <ChevronRight className={styles.chevronBack} /> Volver a servicios
-      </button>
+      <button className={styles.homeLink} onClick={() => router.push("/barbershop")}>Volver al inicio</button>
 
       <h3 className={styles.title}>Elige fecha y hora</h3>
       <p className={styles.subtitle}>Has seleccionado <span className={styles.selectedService}>{serviceName}</span></p>

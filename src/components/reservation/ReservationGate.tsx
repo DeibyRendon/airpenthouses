@@ -28,7 +28,7 @@ export default function ReservationGate() {
       return;
     }
 
-    router.push(`/services`);
+    router.push(`/barbershop/services`);
   };
 
   return (

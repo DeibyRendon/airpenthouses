@@ -17,7 +17,7 @@ export default function ServiceSelector({ guestName }: { guestName: string }) {
     await setServiceCookie(serviceId, serviceName);
     
     // Clean redirect!
-    router.push(`/calendar`);
+    router.push(`/barbershop/calendar`);
   };
 
   const services = [
@@ -28,7 +28,9 @@ export default function ServiceSelector({ guestName }: { guestName: string }) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.guestBadge}>
+      <button className={styles.backButton} onClick={() => router.push("/barbershop")}>Volver al inicio</button>
+      
+      <div className={`${styles.guestBadge} mt-6`}>
         <div className={styles.guestIconWrapper}>
           <CheckCircle className={styles.guestIcon} />
         </div>
