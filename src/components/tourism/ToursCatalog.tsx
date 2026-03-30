@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Map, Clock, Users, ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency } from "@/utils/format";
+import { Tour } from "@/types/tourism";
 import styles from "./ToursCatalog.module.css";
 
-export default function ToursCatalog({ tours, guestName }: { tours: any[], guestName: string }) {
-  const router = useRouter();
+export default function ToursCatalog({ tours, guestName }: { readonly tours: Tour[], readonly guestName: string }) {
   const [activeTab, setActiveTab] = useState<"GROUP" | "PRIVATE">("GROUP");
 
   const filteredTours = tours.filter(t => t.tour_type === activeTab);
@@ -61,11 +61,7 @@ export default function ToursCatalog({ tours, guestName }: { tours: any[], guest
                     <Map className="w-6 h-6" />
                   </div>
                   <span className={styles.price}>
-                    {new Intl.NumberFormat('es-CO', { 
-                        style: 'currency', 
-                        currency: 'COP', 
-                        maximumFractionDigits: 0 
-                    }).format(tour.price)}
+                    {formatCurrency(tour.price)}
                   </span>
                 </div>
                 

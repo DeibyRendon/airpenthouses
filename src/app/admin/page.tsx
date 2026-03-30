@@ -5,6 +5,8 @@ import { LogOut, Plus, Map, Info } from "lucide-react";
 import Link from "next/link";
 import DeleteTourButton from "@/components/admin/DeleteTourButton";
 import BookingsList from "@/components/admin/BookingsList";
+import { formatCurrency } from "@/utils/format";
+import { Tour } from "@/types/tourism";
 
 export default async function AdminDashboard() {
   const isAuth = await verifyAdmin();
@@ -49,7 +51,7 @@ export default async function AdminDashboard() {
           </Link>
         </div>
 
-        {error ? (
+        {error && (
           <div className="bg-amber-50 border-l-4 border-amber-500 p-6 rounded-r-xl shadow-sm mb-8 flex gap-4">
             <Info className="w-6 h-6 text-amber-600 flex-shrink-0" />
             <div>
@@ -62,20 +64,18 @@ export default async function AdminDashboard() {
               </p>
             </div>
           </div>
-        ) : tours && tours.length > 0 ? (
+        )}
+
+        {!error && (tours as Tour[]) && (tours as Tour[]).length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {tours.map(tour => (
+             {(tours as Tour[]).map(tour => (
                 <div key={tour.id} className="bg-white border text-left border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
                   <div className="flex justify-between items-start mb-4">
                     <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide ${tour.tour_type === 'PRIVATE' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
                       {tour.tour_type}
                     </span>
                     <span className="text-lg font-bold text-green-700">
-                      {new Intl.NumberFormat('es-CO', { 
-                          style: 'currency', 
-                          currency: 'COP', 
-                          maximumFractionDigits: 0 
-                      }).format(tour.price)}
+                      {formatCurrency(tour.price)}
                     </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{tour.name}</h3>
@@ -108,7 +108,9 @@ export default async function AdminDashboard() {
                 </div>
              ))}
           </div>
-        ) : (
+        )}
+
+        {!error && (!tours || (tours as Tour[]).length === 0) && (
           <div className="text-center bg-white border border-slate-200 rounded-3xl p-16 shadow-sm">
             <Map className="w-16 h-16 text-slate-300 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-slate-800 mb-2">No hay tours configurados</h3>

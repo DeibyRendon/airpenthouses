@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Clock, Users, ArrowLeft, Loader2, MapPin, Coffee, ArrowRight } from "lucide-react";
+import { Clock, Users, ArrowLeft, Loader2, MapPin, Coffee } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency } from "@/utils/format";
+import { Tour, TourStop } from "@/types/tourism";
 import { bookTourAction, getTourAvailabilityAction } from "@/app/actions/tourism";
 import styles from "./TourDetailClient.module.css";
 
-export default function TourDetailClient({ tour, stops }: { tour: any, stops: any[] }) {
+export default function TourDetailClient({ tour, stops }: { readonly tour: Tour, readonly stops: TourStop[] }) {
   const router = useRouter();
   
   const [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export default function TourDetailClient({ tour, stops }: { tour: any, stops: an
     setAvailability(res);
   };
 
-  const handleBooking = async (e: React.FormEvent) => {
+  const handleBooking = async (e: FormEvent) => {
     e.preventDefault();
     if (!dateStr) return setError("Por favor, selecciona una fecha para tu viaje.");
     
@@ -104,19 +106,16 @@ export default function TourDetailClient({ tour, stops }: { tour: any, stops: an
           <div className={styles.priceSection}>
             <h3 className={styles.priceLabel}>Inversión Final</h3>
             <div className={styles.priceValue}>
-              {new Intl.NumberFormat('es-CO', { 
-                  style: 'currency', 
-                  currency: 'COP', 
-                  maximumFractionDigits: 0 
-              }).format(tour.price)}
+              {formatCurrency(tour.price)}
             </div>
             {tour.tour_type === 'PRIVATE' && <p className={styles.priceNote}>Precio global por la van/vehículo privado.</p>}
           </div>
 
           <form onSubmit={handleBooking} className={styles.bookingForm}>
             <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel}>Fecha del Recorrido</label>
+              <label htmlFor="booking-date" className={styles.fieldLabel}>Fecha del Recorrido</label>
               <input 
+                id="booking-date"
                 type="date" 
                 required
                 min={new Date().toISOString().split("T")[0]}
@@ -143,10 +142,11 @@ export default function TourDetailClient({ tour, stops }: { tour: any, stops: an
             )}
 
             <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel}>Número de Turistas</label>
+              <label htmlFor="pax-select" className={styles.fieldLabel}>Número de Turistas</label>
               <div className={styles.selectWrapper}>
                 <Users className={styles.selectIcon} />
                 <select 
+                  id="pax-select"
                   value={passengers}
                   onChange={e => setPassengers(Number(e.target.value))}
                   className={styles.selectField}
@@ -170,8 +170,10 @@ export default function TourDetailClient({ tour, stops }: { tour: any, stops: an
             >
               {loading ? (
                 <Loader2 className="animate-spin text-blue-900 w-6 h-6" />
+              ) : availability?.isFull ? (
+                "Sin Cupos Disponibles"
               ) : (
-                availability?.isFull ? "Sin Cupos Disponibles" : "Confirmar Experiencia"
+                "Confirmar Experiencia"
               )}
             </button>
             <p className={styles.formFooter}>

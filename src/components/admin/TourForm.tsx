@@ -1,23 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Plus, Trash2 } from "lucide-react";
 import { createTourAction, updateTourAction } from "@/app/actions/tourism";
+import { Tour, TourStop, TourType } from "@/types/tourism";
 
 interface TourFormProps {
-  initialData?: {
-    id?: string;
-    tour_type: string;
-    name: string;
-    description: string;
-    departure_time: string;
-    arrival_time: string;
-    max_capacity: number | string;
-    price: number | string;
-  };
-  initialStops?: any[];
-  isEdit?: boolean;
+  readonly initialData?: Tour;
+  readonly initialStops?: TourStop[];
+  readonly isEdit?: boolean;
 }
 
 export default function TourForm({ initialData, initialStops, isEdit = false }: TourFormProps) {
@@ -26,7 +18,7 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
   const [error, setError] = useState("");
 
   const [tour, setTour] = useState({
-    tour_type: initialData?.tour_type || "PRIVATE",
+    tour_type: (initialData?.tour_type || "PRIVATE") as TourType,
     name: initialData?.name || "",
     description: initialData?.description || "",
     departure_time: initialData?.departure_time?.substring(0, 5) || "09:00",
@@ -35,10 +27,10 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
     price: initialData?.price?.toString() || "150"
   });
 
-  const [stops, setStops] = useState(initialStops || [{ place_name: "", is_rest_stop: false, estimated_duration_minutes: "15" }]);
+  const [stops, setStops] = useState<Partial<TourStop>[]>(initialStops || [{ place_name: "", is_rest_stop: false, estimated_duration_minutes: 15 }]);
 
   const handleAddStop = () => {
-    setStops([...stops, { place_name: "", is_rest_stop: false, estimated_duration_minutes: "30" }]);
+    setStops([...stops, { place_name: "", is_rest_stop: false, estimated_duration_minutes: 30 }]);
   };
 
   const handleRemoveStop = (index: number) => {
@@ -47,13 +39,13 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
     setStops(newStops);
   };
 
-  const updateStop = (index: number, field: string, value: any) => {
-    const newStops = [...stops] as any;
-    newStops[index][field] = value;
+  const updateStop = (index: number, field: keyof TourStop, value: any) => {
+    const newStops = [...stops];
+    (newStops[index] as any)[field] = value;
     setStops(newStops);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!tour.name) return setError("El nombre del tour es obligatorio.");
     
@@ -61,13 +53,13 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
     setError("");
 
     // Verify stops validity
-    const validStops = stops.filter(s => s.place_name.trim() !== "");
+    const validStops = stops.filter(s => s.place_name?.trim() !== "");
 
     let response;
     if (isEdit && initialData?.id) {
-        response = await updateTourAction(initialData.id, tour, validStops);
+        response = await updateTourAction(initialData.id, tour as any, validStops as any);
     } else {
-        response = await createTourAction(tour, validStops);
+        response = await createTourAction(tour as any, validStops as any);
     }
 
     if (response.error) {
@@ -91,11 +83,12 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Modalidad</label>
+            <label htmlFor="tour_type" className="block text-sm font-semibold text-slate-700 mb-2">Modalidad</label>
             <select 
+              id="tour_type"
               className="w-full p-4 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-900 outline-none transition-all"
               value={tour.tour_type} 
-              onChange={e => setTour({...tour, tour_type: e.target.value})}
+              onChange={e => setTour({...tour, tour_type: e.target.value as TourType})}
             >
               <option value="PRIVATE">Tour Privado y Personalizado (Transporte Exclusivo)</option>
               <option value="GROUP">Tour Grupal por Rutas</option>
@@ -103,8 +96,9 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Nombre de la Ruta/Tour</label>
+            <label htmlFor="tour_name" className="block text-sm font-semibold text-slate-700 mb-2">Nombre de la Ruta/Tour</label>
             <input 
+              id="tour_name"
               type="text" 
               required
               placeholder="Ej: Ruta Botero y Cultura"
@@ -116,8 +110,9 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Descripción General</label>
+          <label htmlFor="tour_description" className="block text-sm font-semibold text-slate-700 mb-2">Descripción General</label>
           <textarea 
+             id="tour_description"
              rows={3}
              className="w-full p-4 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 outline-none transition-all"
              value={tour.description} 
@@ -127,20 +122,20 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Hora Salida</label>
-            <input type="time" required className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.departure_time} onChange={e => setTour({...tour, departure_time: e.target.value})} />
+            <label htmlFor="departure_time" className="block text-sm font-semibold text-slate-700 mb-2">Hora Salida</label>
+            <input id="departure_time" type="time" required className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.departure_time} onChange={e => setTour({...tour, departure_time: e.target.value})} />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Hora Llegada</label>
-            <input type="time" required className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.arrival_time} onChange={e => setTour({...tour, arrival_time: e.target.value})} />
+            <label htmlFor="arrival_time" className="block text-sm font-semibold text-slate-700 mb-2">Hora Llegada</label>
+            <input id="arrival_time" type="time" required className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.arrival_time} onChange={e => setTour({...tour, arrival_time: e.target.value})} />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Max. Personas</label>
-            <input type="number" required min="1" className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.max_capacity} onChange={e => setTour({...tour, max_capacity: e.target.value})} />
+            <label htmlFor="max_capacity" className="block text-sm font-semibold text-slate-700 mb-2">Max. Personas</label>
+            <input id="max_capacity" type="number" required min="1" className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.max_capacity} onChange={e => setTour({...tour, max_capacity: e.target.value})} />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-slate-700 mb-2">Precio (COP)</label>
-            <input type="number" required min="0" step="0.01" className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.price} onChange={e => setTour({...tour, price: e.target.value})} />
+            <label htmlFor="price" className="block text-sm font-semibold text-slate-700 mb-2">Precio (COP)</label>
+            <input id="price" type="number" required min="0" step="0.01" className="w-full p-3 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white outline-none" value={tour.price} onChange={e => setTour({...tour, price: e.target.value})} />
           </div>
         </div>
       </div>
@@ -196,7 +191,7 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
                       placeholder="30" 
                       title="Minutos de estancia"
                       className="w-full p-3 border border-slate-300 rounded-xl text-center bg-white font-bold text-blue-900"
-                      value={stop.estimated_duration_minutes}
+                      value={stop.estimated_duration_minutes ?? ''}
                       onChange={e => updateStop(index, 'estimated_duration_minutes', e.target.value)}
                     />
                     <span className="absolute -top-5 left-0 w-full text-[10px] font-bold text-slate-400 uppercase text-center">Minutos</span>
@@ -220,7 +215,13 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
         disabled={loading}
         className="w-full bg-blue-900 text-white p-5 rounded-2xl font-bold text-lg hover:bg-blue-800 transition-all flex justify-center items-center shadow-xl shadow-blue-900/20 disabled:opacity-50"
       >
-        {loading ? <Loader2 className="animate-spin w-6 h-6" /> : (isEdit ? "Guardar Cambios" : "Guardar e Inyectar en Servidor")}
+        {loading ? (
+          <Loader2 className="animate-spin w-6 h-6" />
+        ) : isEdit ? (
+          "Guardar Cambios"
+        ) : (
+          "Guardar e Inyectar en Servidor"
+        )}
       </button>
 
     </form>

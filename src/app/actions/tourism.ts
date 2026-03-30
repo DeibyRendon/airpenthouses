@@ -2,8 +2,9 @@
 import { createClient } from "@/utils/supabase/server";
 import { verifyAdmin } from "@/app/actions/admin";
 import { revalidatePath } from "next/cache";
+import { Tour, TourStop } from "@/types/tourism";
 
-export async function createTourAction(tourData: any, stopsData: any[]) {
+export async function createTourAction(tourData: Partial<Tour>, stopsData: Partial<TourStop>[]) {
   const isAdmin = await verifyAdmin();
   if (!isAdmin) return { error: "Operación rechazada. No tienes permisos de Administrador." };
 
@@ -18,8 +19,8 @@ export async function createTourAction(tourData: any, stopsData: any[]) {
       description: tourData.description,
       departure_time: tourData.departure_time,
       arrival_time: tourData.arrival_time,
-      max_capacity: Number.parseInt(tourData.max_capacity),
-      price: Number.parseFloat(tourData.price)
+      max_capacity: Number.parseInt(tourData.max_capacity as any),
+      price: Number.parseFloat(tourData.price as any)
     }])
     .select()
     .single();
@@ -35,7 +36,7 @@ export async function createTourAction(tourData: any, stopsData: any[]) {
       stop_order: index + 1,
       place_name: stop.place_name,
       is_rest_stop: stop.is_rest_stop,
-      estimated_duration_minutes: stop.estimated_duration_minutes ? Number.parseInt(stop.estimated_duration_minutes) : null
+      estimated_duration_minutes: stop.estimated_duration_minutes ? Number.parseInt(stop.estimated_duration_minutes as any) : null
     }));
 
     const { error: stopsError } = await supabase
@@ -53,14 +54,13 @@ export async function createTourAction(tourData: any, stopsData: any[]) {
   return { success: true, tourId: tour.id };
 }
 
-export async function updateTourAction(tourId: string, tourData: any, stopsData: any[]) {
+export async function updateTourAction(tourId: string, tourData: Partial<Tour>, stopsData: Partial<TourStop>[]) {
   const isAdmin = await verifyAdmin();
   if (!isAdmin) return { error: "Operación rechazada." };
 
   const supabase = await createClient();
 
   // 1. Actualizar datos base
-  console.log("SERVER: Actualizando tour ID:", tourId);
   const { error: tourError, count } = await supabase
     .from("tours")
     .update({
@@ -69,15 +69,13 @@ export async function updateTourAction(tourId: string, tourData: any, stopsData:
       description: tourData.description,
       departure_time: tourData.departure_time,
       arrival_time: tourData.arrival_time,
-      max_capacity: Number.parseInt(tourData.max_capacity),
-      price: Number.parseFloat(tourData.price)
+      max_capacity: Number.parseInt(tourData.max_capacity as any),
+      price: Number.parseFloat(tourData.price as any)
     }, { count: 'exact' })
     .eq("id", tourId);
 
-  console.log("SERVER: Resultado Update Tour:", { tourError, count });
-
   if (tourError) return { error: `Error actualizando tour: ${tourError.message}` };
-  if (count === 0) return { error: "No se encontró el tour para actualizar o no tienes permisos (RLS)." };
+  if (count === 0) return { error: "No se encontró el tour o no tienes permisos." };
 
   // 2. Limpiar y refrescar paradas (Enfoque simple y seguro para el orden)
   await supabase.from("tour_stops").delete().eq("tour_id", tourId);
@@ -88,7 +86,7 @@ export async function updateTourAction(tourId: string, tourData: any, stopsData:
       stop_order: index + 1,
       place_name: stop.place_name,
       is_rest_stop: stop.is_rest_stop,
-      estimated_duration_minutes: stop.estimated_duration_minutes ? Number.parseInt(stop.estimated_duration_minutes) : null
+      estimated_duration_minutes: stop.estimated_duration_minutes ? Number.parseInt(stop.estimated_duration_minutes as any) : null
     }));
 
     const { error: stopsError } = await supabase.from("tour_stops").insert(stopsToInsert);
@@ -108,14 +106,11 @@ export async function deleteTourAction(tourId: string) {
 
   // Las paradas se borran automáticamente si hay ON DELETE CASCADE, 
   // pero lo hacemos manual por seguridad si no sabemos la config exacta de la DB.
-  console.log("SERVER: Eliminando tour ID:", tourId);
   await supabase.from("tour_stops").delete().eq("tour_id", tourId);
   const { error, count } = await supabase.from("tours").delete({ count: 'exact' }).eq("id", tourId);
 
-  console.log("SERVER: Resultado Delete Tour:", { error, count });
-
   if (error) return { error: `Error eliminando tour: ${error.message}` };
-  if (count === 0) return { error: "No se pudo eliminar: El tour no existe o no tienes permisos (RLS)." };
+  if (count === 0) return { error: "No se pudo eliminar: El tour no existe o no tienes permisos." };
 
   revalidatePath("/admin");
   return { success: true };
