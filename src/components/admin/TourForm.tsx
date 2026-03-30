@@ -28,6 +28,10 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
   });
 
   const [stops, setStops] = useState<Partial<TourStop>[]>(initialStops || [{ place_name: "", is_rest_stop: false, estimated_duration_minutes: 15 }]);
+  
+  // Nuevo estado para fechas
+  const [dateInput, setDateInput] = useState("");
+  const [availableDates, setAvailableDates] = useState<string[]>(initialData?.available_dates?.map(d => d.available_date) || []);
 
   const handleAddStop = () => {
     setStops([...stops, { place_name: "", is_rest_stop: false, estimated_duration_minutes: 30 }]);
@@ -37,6 +41,17 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
     const newStops = [...stops];
     newStops.splice(index, 1);
     setStops(newStops);
+  };
+
+  const handleAddDate = () => {
+    if (!dateInput) return;
+    if (availableDates.includes(dateInput)) return;
+    setAvailableDates([...availableDates, dateInput].sort());
+    setDateInput("");
+  };
+
+  const handleRemoveDate = (dateToRemove: string) => {
+    setAvailableDates(availableDates.filter(d => d !== dateToRemove));
   };
 
   const updateStop = (index: number, field: keyof TourStop, value: any) => {
@@ -57,9 +72,9 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
 
     let response;
     if (isEdit && initialData?.id) {
-        response = await updateTourAction(initialData.id, tour as any, validStops as any);
+        response = await updateTourAction(initialData.id, tour as any, validStops as any, availableDates);
     } else {
-        response = await createTourAction(tour as any, validStops as any);
+        response = await createTourAction(tour as any, validStops as any, availableDates);
     }
 
     if (response.error) {
@@ -140,7 +155,52 @@ export default function TourForm({ initialData, initialStops, isEdit = false }: 
         </div>
       </div>
 
-      {/* SECCIÓN 2: Puntos de Interés / Paradas */}
+      {/* SECCIÓN 2: Calendario de Salidas */}
+      <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
+        <h2 className="text-xl font-bold text-slate-800 border-b border-slate-100 pb-4 mb-6">Programación de Salidas</h2>
+        
+        <div className="flex gap-4 mb-6">
+          <div className="flex-1">
+            <label htmlFor="new_date" className="block text-sm font-semibold text-slate-700 mb-2">Habilitar Nueva Fecha</label>
+            <input 
+              id="new_date"
+              type="date" 
+              className="w-full p-4 border border-slate-300 rounded-xl bg-slate-50 outline-none"
+              value={dateInput}
+              onChange={e => setDateInput(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
+            />
+          </div>
+          <button 
+            type="button" 
+            onClick={handleAddDate}
+            className="self-end bg-slate-900 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-800 transition-colors"
+          >
+            Añadir Fecha
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          {availableDates.length > 0 ? (
+            availableDates.map(date => (
+              <div key={date} className="bg-blue-50 border border-blue-200 text-blue-900 px-4 py-2 rounded-xl flex items-center gap-3 font-semibold">
+                {date}
+                <button 
+                  type="button" 
+                  onClick={() => handleRemoveDate(date)}
+                  className="text-blue-400 hover:text-blue-700 font-bold text-lg"
+                >
+                  ×
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-slate-400 italic text-sm">No hay fechas programadas. El tour no estará visible para los clientes.</p>
+          )}
+        </div>
+      </div>
+
+      {/* SECCIÓN 3: Puntos de Interés / Paradas */}
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
         <div className="flex justify-between items-end border-b border-slate-100 pb-4 mb-6">
           <h2 className="text-xl font-bold text-slate-800">Lugares de Interés (Ruta)</h2>

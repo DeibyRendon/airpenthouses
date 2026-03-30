@@ -1,12 +1,12 @@
 import { MapPin, CalendarCheck } from "lucide-react";
 import Link from "next/link";
-import { clearReservationSession } from "@/app/actions/reservation";
+import SessionClearer from "@/components/tourism/SessionClearer";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function TourismSuccessPage({ searchParams }: Props) {
+export default async function TourismSuccessPage({ searchParams }: { readonly searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   // Clear the session so the flow is highly secure 
   // Wait Next15 searchParams resolution
   const resolvedParams = await searchParams;
@@ -14,11 +14,12 @@ export default async function TourismSuccessPage({ searchParams }: Props) {
   const date = resolvedParams.date as string || "el día seleccionado";
   const pax = resolvedParams.pax as string || "1";
 
-  // Deslogueamos por seguridad como estandarizamos en Barbería
-  await clearReservationSession();
+  // Nota: La sesión se limpia de forma segura mediante el componente <SessionClearer />
+  // en lugar de llamar directamente a clearReservationSession() en el servidor para evitar errores.
 
   return (
     <main className="min-h-screen pt-32 pb-16 px-4 max-w-7xl mx-auto flex flex-col items-center selection:bg-blue-900 selection:text-white">
+      <SessionClearer />
       <div className="w-full max-w-xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
         {/* Background Accent */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-900 via-blue-600 to-slate-900"></div>

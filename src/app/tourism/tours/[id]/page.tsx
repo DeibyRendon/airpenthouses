@@ -3,7 +3,7 @@ import { getReservationSession } from "@/app/actions/reservation";
 import { redirect } from "next/navigation";
 import TourDetailClient from "@/components/tourism/TourDetailClient";
 
-export default async function TourDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function TourDetailPage({ params }: { readonly params: Promise<{ id: string }> }) {
   const session = await getReservationSession();
 
   if (!session) {
@@ -15,10 +15,13 @@ export default async function TourDetailPage({ params }: { params: Promise<{ id:
 
   const supabase = await createClient();
   
-  // Extraer el Tour
+  // Extraer el Tour con sus fechas disponibles
   const { data: tour, error: tourError } = await supabase
     .from("tours")
-    .select("*")
+    .select(`
+      *,
+      available_dates:tour_available_dates(*)
+    `)
     .eq("id", tourId)
     .single();
 

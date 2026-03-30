@@ -17,10 +17,13 @@ export default async function EditTourPage({ params }: Props) {
   const tourId = resolvedParams.id;
   const supabase = await createClient();
 
-  // Fetch tour and stops
+  // Fetch tour, stops, and dates
   const { data: tour, error: tourError } = await supabase
     .from("tours")
-    .select("*")
+    .select(`
+      *,
+      available_dates:tour_available_dates(*)
+    `)
     .eq("id", tourId)
     .single();
 

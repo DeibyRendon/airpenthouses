@@ -114,18 +114,39 @@ export default function TourDetailClient({ tour, stops }: { readonly tour: Tour,
           <form onSubmit={handleBooking} className={styles.bookingForm}>
             <div className={styles.fieldGroup}>
               <label htmlFor="booking-date" className={styles.fieldLabel}>Fecha del Recorrido</label>
-              <input 
-                id="booking-date"
-                type="date" 
-                required
-                min={new Date().toISOString().split("T")[0]}
-                value={dateStr}
-                onChange={e => {
-                    setDateStr(e.target.value);
-                    checkAvailability(e.target.value);
-                }}
-                className={`${styles.inputField} ${styles.datePicker}`}
-              />
+              {tour.available_dates && tour.available_dates.length > 0 ? (
+                <div className={styles.selectWrapper}>
+                  <Clock className={styles.selectIcon} />
+                  <select 
+                    id="booking-date"
+                    required
+                    value={dateStr}
+                    onChange={e => {
+                        setDateStr(e.target.value);
+                        checkAvailability(e.target.value);
+                    }}
+                    className={styles.selectField}
+                  >
+                    <option value="">Selecciona un día programado...</option>
+                    {[...tour.available_dates]
+                      .sort((a, b) => a.available_date.localeCompare(b.available_date))
+                      .map(d => (
+                        <option key={d.id} value={d.available_date}>
+                          {new Date(d.available_date + "T00:00:00").toLocaleDateString('es-ES', { 
+                            weekday: 'long', 
+                            day: 'numeric', 
+                            month: 'long',
+                            year: 'numeric'
+                          })}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="bg-amber-50 text-amber-800 p-4 rounded-xl text-sm border border-amber-200">
+                  No hay fechas programadas para este tour en este momento.
+                </div>
+              )}
             </div>
 
             {availability && (

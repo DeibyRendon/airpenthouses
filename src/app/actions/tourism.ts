@@ -4,7 +4,7 @@ import { verifyAdmin } from "@/app/actions/admin";
 import { revalidatePath } from "next/cache";
 import { Tour, TourStop } from "@/types/tourism";
 
-export async function createTourAction(tourData: Partial<Tour>, stopsData: Partial<TourStop>[]) {
+export async function createTourAction(tourData: Partial<Tour>, stopsData: Partial<TourStop>[], datesData: string[]) {
   const isAdmin = await verifyAdmin();
   if (!isAdmin) return { error: "Operación rechazada. No tienes permisos de Administrador." };
 
@@ -48,13 +48,24 @@ export async function createTourAction(tourData: Partial<Tour>, stopsData: Parti
     }
   }
 
+  // 3. Insertar Fechas Disponibles
+  if (datesData && datesData.length > 0) {
+    const datesToInsert = datesData.map(date => ({
+      tour_id: tour.id,
+      available_date: date
+    }));
+
+    const { error: datesError } = await supabase.from("tour_available_dates").insert(datesToInsert);
+    if (datesError) return { error: `Tour creado pero falló el registro de fechas: ${datesError.message}` };
+  }
+
   // Refrescar el caché duro de Next.js para que el dashboard muestre el nuevo Tour inmediatamente
   revalidatePath("/admin");
   
   return { success: true, tourId: tour.id };
 }
 
-export async function updateTourAction(tourId: string, tourData: Partial<Tour>, stopsData: Partial<TourStop>[]) {
+export async function updateTourAction(tourId: string, tourData: Partial<Tour>, stopsData: Partial<TourStop>[], datesData: string[]) {
   const isAdmin = await verifyAdmin();
   if (!isAdmin) return { error: "Operación rechazada." };
 
@@ -91,6 +102,19 @@ export async function updateTourAction(tourId: string, tourData: Partial<Tour>, 
 
     const { error: stopsError } = await supabase.from("tour_stops").insert(stopsToInsert);
     if (stopsError) return { error: `Tour actualizado pero fallaron las paradas: ${stopsError.message}` };
+  }
+
+  // 3. Limpiar y refrescar fechas
+  await supabase.from("tour_available_dates").delete().eq("tour_id", tourId);
+
+  if (datesData && datesData.length > 0) {
+    const datesToInsert = datesData.map(date => ({
+      tour_id: tourId,
+      available_date: date
+    }));
+
+    const { error: datesError } = await supabase.from("tour_available_dates").insert(datesToInsert);
+    if (datesError) return { error: `Tour actualizado pero fallaron las fechas: ${datesError.message}` };
   }
 
   revalidatePath("/admin");
@@ -137,6 +161,18 @@ export async function bookTourAction(tourId: string, bookingDate: string, passen
     .eq("booking_date", bookingDate);
 
   const totalBooked = (booked || []).reduce((sum, b) => sum + b.passenger_count, 0);
+
+  // 3. Validar que la fecha elegida sea una de las permitidas por el Administrador
+  const { data: isAvailableDate } = await supabase
+    .from("tour_available_dates")
+    .select("id")
+    .eq("tour_id", tourId)
+    .eq("available_date", bookingDate)
+    .single();
+
+  if (!isAvailableDate) {
+    return { error: "Este tour no está programado para la fecha seleccionada." };
+  }
 
   if (totalBooked + passengers > tour.max_capacity) {
     const available = tour.max_capacity - totalBooked;
