@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { LogOut, Plus, Map, Info } from "lucide-react";
 import Link from "next/link";
+import DeleteTourButton from "@/components/admin/DeleteTourButton";
+import BookingsList from "@/components/admin/BookingsList";
 
 export default async function AdminDashboard() {
   const isAuth = await verifyAdmin();
@@ -68,24 +70,40 @@ export default async function AdminDashboard() {
                     <span className={`text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide ${tour.tour_type === 'PRIVATE' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}`}>
                       {tour.tour_type}
                     </span>
-                    <span className="text-lg font-bold text-green-700">${tour.price}</span>
+                    <span className="text-lg font-bold text-green-700">
+                      {new Intl.NumberFormat('es-CO', { 
+                          style: 'currency', 
+                          currency: 'COP', 
+                          maximumFractionDigits: 0 
+                      }).format(tour.price)}
+                    </span>
                   </div>
                   <h3 className="text-xl font-bold text-slate-900 mb-2">{tour.name}</h3>
                   <p className="text-sm text-slate-500 line-clamp-2 mb-4">{tour.description}</p>
                   
-                  <div className="flex gap-4 text-sm font-medium text-slate-700 bg-slate-50 p-3 rounded-lg">
+                  <div className="flex gap-4 text-sm font-medium text-slate-700 bg-slate-50 p-3 rounded-lg mb-6">
                     <div>
                       <span className="text-slate-400 block text-xs">Salida</span>
-                      {tour.departure_time}
+                      {tour.departure_time.substring(0, 5)}
                     </div>
                     <div>
                       <span className="text-slate-400 block text-xs">Llegada</span>
-                      {tour.arrival_time}
+                      {tour.arrival_time.substring(0, 5)}
                     </div>
                     <div>
-                      <span className="text-slate-400 block text-xs">Cupos</span>
-                      {tour.max_capacity} max
+                      <span className="text-slate-400 block text-xs">Capacidad</span>
+                      {tour.max_capacity} pax
                     </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-4 border-t border-slate-100">
+                    <Link 
+                      href={`/admin/tours/${tour.id}/edit`} 
+                      className="flex-1 bg-slate-900 text-white p-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors shadow-sm"
+                    >
+                      <Plus className="w-4 h-4" /> Editar
+                    </Link>
+                    <DeleteTourButton tourId={tour.id} />
                   </div>
                 </div>
              ))}
@@ -97,6 +115,17 @@ export default async function AdminDashboard() {
             <p className="text-slate-500 mb-6 max-w-md mx-auto">La base de datos está conectada correctamente, pero aún no has añadido recorridos por la ciudad.</p>
           </div>
         )}
+
+        {/* SECCIÓN DE RESERVAS */}
+        <div className="mt-16">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 bg-indigo-50 text-indigo-900 rounded-xl flex items-center justify-center">
+              <Info className="w-5 h-5" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Reservas Recientes de Tours</h2>
+          </div>
+          <BookingsList />
+        </div>
       </div>
     </main>
   );

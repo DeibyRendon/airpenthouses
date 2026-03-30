@@ -1,0 +1,169 @@
+@reference "../../styles/globals.css";
+
+.container {
+  @apply max-w-5xl mx-auto flex flex-col lg:flex-row gap-8;
+}
+
+.leftColumn {
+  @apply flex-1 space-y-6;
+}
+
+.backLink {
+  @apply inline-flex items-center gap-2 text-slate-500 hover:text-blue-900 font-semibold transition-colors bg-white px-5 py-2.5 rounded-full shadow-sm;
+}
+
+.itineraryCard {
+  @apply bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100;
+}
+
+.tourBadgeWrapper {
+  @apply flex justify-between items-start mb-6;
+}
+
+.tourBadge {
+  @apply px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider;
+}
+
+.tourBadgePrivate {
+  @apply bg-slate-900 text-white;
+}
+
+.tourBadgeGroup {
+  @apply bg-blue-100 text-blue-900;
+}
+
+.tourTitle {
+  @apply text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight line-clamp-2;
+}
+
+.tourDescription {
+  @apply text-lg text-slate-500 mb-10 leading-relaxed;
+}
+
+.itineraryTitle {
+  @apply text-2xl font-bold text-slate-900 mb-8 flex items-center gap-3;
+}
+
+.itineraryTimeline {
+  @apply relative border-l-2 border-slate-200 ml-5 space-y-10 pl-8 pb-4;
+}
+
+.timelineDot {
+  @apply absolute -left-[41px] top-1 w-5 h-5 rounded-full ring-4 ring-white;
+}
+
+.timelineDotPrimary {
+  @apply bg-blue-900;
+}
+
+.timelineDotSecondary {
+  @apply bg-slate-900;
+}
+
+.stopDot {
+  @apply absolute -left-[41px] top-1 w-5 h-5 rounded-full ring-4 ring-white border-[3px];
+}
+
+.stopDotNormal {
+  @apply bg-white border-slate-300;
+}
+
+.stopDotRest {
+  @apply bg-amber-500 border-amber-500;
+}
+
+.stopTitle {
+  @apply text-lg font-bold text-slate-900;
+}
+
+.stopInfo {
+  @apply text-sm font-semibold mt-1 flex items-center gap-2;
+}
+
+.stopInfoPrimary {
+  @apply text-blue-600;
+}
+
+.stopInfoSecondary {
+  @apply text-slate-600;
+}
+
+.restStopBadge {
+  @apply inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 mt-2 px-3 py-1 rounded-full border border-amber-200;
+}
+
+.rightColumn {
+  @apply w-full lg:w-96 flex-shrink-0;
+}
+
+.bookingCard {
+  @apply bg-slate-900 text-white rounded-3xl p-8 sticky top-24 shadow-2xl shadow-blue-900/10;
+}
+
+.priceSection {
+  @apply mb-8;
+}
+
+.priceLabel {
+  @apply text-slate-400 text-sm font-semibold uppercase tracking-widest mb-2;
+}
+
+.priceValue {
+  @apply text-5xl font-extrabold flex items-baseline gap-2;
+}
+
+.priceCurrency {
+  @apply text-xl font-medium text-slate-500;
+}
+
+.priceNote {
+  @apply text-xs text-blue-400 mt-2;
+}
+
+.bookingForm {
+  @apply space-y-6;
+}
+
+.fieldGroup {
+  @apply space-y-2;
+}
+
+.fieldLabel {
+  @apply block text-sm font-medium text-slate-300 mb-2;
+}
+
+.inputField {
+  @apply w-full p-4 bg-slate-800 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-white;
+}
+
+.datePicker {
+  color-scheme: dark;
+}
+
+.selectWrapper {
+  @apply relative;
+}
+
+.selectIcon {
+  @apply absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5;
+}
+
+.selectField {
+  @apply w-full p-4 pl-12 bg-slate-800 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-white appearance-none;
+}
+
+.selectBadge {
+  @apply absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-xs font-semibold;
+}
+
+.errorMessage {
+  @apply bg-red-900/50 text-red-200 text-sm font-medium p-3 rounded-xl border border-red-800;
+}
+
+.submitButton {
+  @apply w-full bg-white text-slate-900 p-5 rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all flex justify-center items-center shadow-lg disabled:opacity-50;
+}
+
+.formFooter {
+  @apply text-center text-xs text-slate-500 mt-4 leading-relaxed;
+}

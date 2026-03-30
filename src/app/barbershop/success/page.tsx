@@ -1,5 +1,4 @@
 import { Star } from "lucide-react";
-import { clearReservationSession } from "@/app/actions/reservation";
 import Link from "next/link";
 
 type Props = {
@@ -7,9 +6,6 @@ type Props = {
 }
 
 export default async function SuccessPage({ searchParams }: Props) {
-  // Securely clear the browser session so the reservation cannot be accessed by going back
-  await clearReservationSession();
-
   const resolvedParams = await searchParams;
   const date = resolvedParams.date as string | undefined;
   const time = resolvedParams.time as string | undefined;

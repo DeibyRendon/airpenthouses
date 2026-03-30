@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, Calendar, Clock, ChevronRight } from "lucide-react";
+import { Loader2, Calendar, Clock } from "lucide-react";
+import { clearReservationSession } from "@/app/actions/reservation";
 import styles from "./AppointmentCalendar.module.css";
 
 export default function AppointmentCalendar({
@@ -41,13 +42,16 @@ export default function AppointmentCalendar({
         appointment_date: appointmentTimestamp,
       });
 
-    setLoading(false);
-
     if (insertError) {
+      setLoading(false);
       setError("Hubo un problema guardando la cita. Intenta de nuevo.");
       return;
     }
 
+    // Securely clear the session via Server Action before redirecting
+    await clearReservationSession();
+
+    setLoading(false);
     router.push(`/barbershop/success?date=${selectedDate}&time=${selectedTime}`);
   };
 
@@ -98,7 +102,12 @@ export default function AppointmentCalendar({
           {timeSlots.map((time) => {
             const isActive = selectedTime === time;
             const isDisabled = !selectedDate;
-            const stateClass = isDisabled ? styles.hourBtnDisabled : (isActive ? styles.hourBtnActive : styles.hourBtnInactive);
+            let stateClass = styles.hourBtnInactive;
+            if (isDisabled) {
+              stateClass = styles.hourBtnDisabled;
+            } else if (isActive) {
+              stateClass = styles.hourBtnActive;
+            }
 
             return (
               <button
