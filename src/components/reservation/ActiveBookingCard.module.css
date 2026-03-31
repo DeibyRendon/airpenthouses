@@ -101,3 +101,31 @@
   font-size: 0.875rem;
   font-style: italic;
 }
+
+.barberBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.75rem;
+  margin: 0.5rem 0;
+  width: fit-content;
+}
+
+.barberLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6366f1;
+}
+
+.barberName {
+  font-weight: 800;
+  color: #4338ca;
+}

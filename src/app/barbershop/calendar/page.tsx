@@ -1,13 +1,22 @@
 import AppointmentCalendar from "@/components/reservation/AppointmentCalendar";
-import { getReservationSession, getServiceCookie } from "@/app/actions/reservation";
-import { redirect } from "next/navigation";
+import { getReservationSession, getServiceCookie, getBarberServicesAction } from "@/app/actions/reservation";
+import { redirect, notFound } from "next/navigation";
 
 export default async function CalendarPage() {
   const session = await getReservationSession();
-  const service = await getServiceCookie();
+  const serviceCookie = await getServiceCookie();
 
-  if (!session || !service.id || !service.name) {
+  if (!session || !serviceCookie.id) {
     redirect("/");
+  }
+
+  // Obtener los detalles completos del servicio desde la base de datos (Admin)
+  const allServices = await getBarberServicesAction();
+  const selectedService = allServices.find(s => s.id === serviceCookie.id);
+
+  if (!selectedService) {
+    // Si el servicio ya no existe o fue desactivado, redirigir al catálogo
+    redirect("/barbershop/services");
   }
 
   return (
@@ -16,8 +25,7 @@ export default async function CalendarPage() {
         <AppointmentCalendar 
           reservationId={session.id} 
           guestName={session.guest_name} 
-          serviceId={service.id} 
-          serviceName={service.name} 
+          service={selectedService}
         />
       </div>
     </main>

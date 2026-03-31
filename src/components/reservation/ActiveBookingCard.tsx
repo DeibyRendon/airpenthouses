@@ -1,4 +1,4 @@
-import { ChevronRight, Calendar, Clock } from "lucide-react";
+import { ChevronRight, Calendar, Clock, User } from "lucide-react";
 import styles from "./ActiveBookingCard.module.css";
 
 interface BookingData {
@@ -34,6 +34,12 @@ export default function ActiveBookingCard({
             <div className={styles.serviceInfo}>
               <span className={styles.serviceType}>Barbería</span>
               <span className={styles.serviceName}>{appointment.service_type}</span>
+              
+              {/* Información del Barbero Asignado */}
+              <div className={styles.barberBadge}>
+                <User className="w-3 h-3 text-indigo-500" />
+                <span className={styles.barberLabel}>Personal: <span className="font-bold">{appointment.barber_name}</span></span>
+              </div>
               
               <div className={styles.metaRow}>
                 <div className={styles.metaItem}>
