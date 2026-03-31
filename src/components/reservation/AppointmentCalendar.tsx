@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Loader2, Calendar, Clock } from "lucide-react";
+import { Loader2, Calendar, Clock, ArrowLeft } from "lucide-react";
 import { clearReservationSession } from "@/app/actions/reservation";
 import styles from "./AppointmentCalendar.module.css";
 
@@ -13,10 +13,10 @@ export default function AppointmentCalendar({
   serviceId,
   serviceName,
 }: {
-  reservationId: string;
-  guestName: string;
-  serviceId: string;
-  serviceName: string;
+  readonly reservationId: string;
+  readonly guestName: string;
+  readonly serviceId: string;
+  readonly serviceName: string;
 }) {
   const router = useRouter();
   
@@ -73,7 +73,13 @@ export default function AppointmentCalendar({
 
   return (
     <div className={styles.container}>
-      <button className={styles.homeLink} onClick={() => router.push("/barbershop")}>Volver al inicio</button>
+      <button 
+        className={`${styles.homeLink} group`} 
+        onClick={() => router.push("/barbershop/services")}
+      >
+        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+        Regresar al Catálogo
+      </button>
 
       <h3 className={styles.title}>Elige fecha y hora</h3>
       <p className={styles.subtitle}>Has seleccionado <span className={styles.selectedService}>{serviceName}</span></p>

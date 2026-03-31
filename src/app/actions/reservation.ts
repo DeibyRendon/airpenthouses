@@ -68,3 +68,69 @@ export async function getServiceCookie() {
     name: cookieStore.get("selected_service_name")?.value,
   };
 }
+
+export async function getActiveBookingsAction() {
+  const session = await getReservationSession();
+  if (!session) return null;
+
+  const supabase = await createClient();
+
+  // DEBUG LOGS
+  console.log(`[DEBUG] Buscando reservas para ID: ${session.id}, Nombre: ${session.guest_name}`);
+
+  // 1. Citas de Barbería
+  const { data: barberBookings, error: barberError } = await supabase
+    .from("barbershop_appointments")
+    .select("*")
+    .eq("reservation_id", session.id)
+    .order("appointment_date", { ascending: true });
+
+  if (barberError) console.error("[DEBUG] Error Barbería:", barberError);
+
+  // 2. Reservas de Tours (incluyendo nombre del tour)
+  const { data: tourBookings, error: tourError } = await supabase
+    .from("tourism_bookings")
+    .select(`
+      *,
+      tours ( name )
+    `)
+    .eq("reservation_id", session.id)
+    .order("booking_date", { ascending: true });
+
+  if (tourError) console.error("[DEBUG] Error Tours:", tourError);
+
+  console.log(`[DEBUG] Resultados - Barbería: ${barberBookings?.length || 0}, Tours: ${tourBookings?.length || 0}`);
+
+  return {
+    guestName: session.guest_name,
+    barber: barberBookings || [],
+    tours: tourBookings || []
+  };
+}
+
+export async function getBarberServicesAction() {
+  // Lista centralizada de servicios (alineable con DB en el futuro)
+  return [
+    { 
+      id: 'corte', 
+      name: 'Corte Premium', 
+      description: 'Corte de autor adaptado a tus facciones, incluye lavado exfoliante con productos de alta gama y peinado profesional.',
+      time: '45 min', 
+      price: '$100.000' 
+    },
+    { 
+      id: 'barba', 
+      name: 'Arreglo de Barba', 
+      description: 'Diseño y perfilado con navaja tradicional, tratamiento de hidratación con aceites y ritual de toalla caliente.',
+      time: '30 min', 
+      price: '$80.000' 
+    },
+    { 
+      id: 'combo', 
+      name: 'Combo Completo', 
+      description: 'Nuestra experiencia insignia. Fusión del corte premium y ritual de barba, incluyendo masaje facial relajante.',
+      time: '75 min', 
+      price: '$150.000' 
+    },
+  ];
+}

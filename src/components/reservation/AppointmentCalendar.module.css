@@ -101,5 +101,5 @@
 }
 
 .homeLink {
-  @apply text-blue-900 underline;
+  @apply flex items-center gap-2 text-slate-400 hover:text-indigo-600 transition-colors w-fit mb-8 font-bold text-[10px] uppercase tracking-widest;
 }

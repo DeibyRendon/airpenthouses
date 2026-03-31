@@ -4,24 +4,12 @@
   @apply w-full text-left;
 }
 
+.header {
+  @apply flex items-center justify-between mb-8;
+}
+
 .guestBadge {
-  @apply flex items-center gap-4 mb-8 bg-slate-50 p-4 rounded-xl border border-slate-200;
-}
-
-.guestIconWrapper {
-  @apply bg-blue-100 text-blue-900 p-2.5 rounded-full ring-4 ring-white shadow-sm;
-}
-
-.guestIcon {
-  @apply w-6 h-6;
-}
-
-.guestLabel {
-  @apply text-xs font-semibold uppercase tracking-wider text-slate-500;
-}
-
-.guestName {
-  @apply text-lg font-bold text-slate-800;
+  @apply bg-green-50 text-green-800 text-sm font-semibold px-4 py-1.5 rounded-full flex items-center gap-2 border border-green-200 shadow-sm;
 }
 
 .title {
@@ -29,39 +17,62 @@
 }
 
 .serviceList {
-  @apply space-y-4;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-.serviceButton {
-  @apply w-full flex items-center justify-between p-5 border-2 border-slate-100 bg-white rounded-2xl hover:border-blue-900 hover:bg-blue-50/30 transition-all text-left shadow-sm hover:shadow-md;
+@media (min-width: 768px) {
+  .serviceList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.serviceButtonContent {
-  @apply flex items-center gap-5;
+@media (min-width: 1024px) {
+  .serviceList {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.serviceCard {
+  @apply bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/20 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300;
+}
+
+.cardContent {
+  @apply p-8 flex-1 flex flex-col;
+}
+
+.cardHeader {
+  @apply flex justify-between items-start mb-6;
 }
 
 .serviceIconWrapper {
-  @apply bg-slate-50 border border-slate-100 p-3.5 rounded-xl text-slate-500 transition-colors;
+  @apply w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center;
 }
 
-.serviceButton:hover .serviceIconWrapper {
-  @apply bg-blue-100 text-blue-900;
-}
-
-.serviceIcon {
-  @apply w-6 h-6;
+.priceTag {
+  @apply text-2xl font-bold text-slate-900;
 }
 
 .serviceName {
-  @apply font-bold text-slate-800 text-lg transition-colors;
+  @apply text-xl font-bold text-slate-800 mb-2;
 }
 
-.serviceButton:hover .serviceName {
-  @apply text-blue-900;
+.serviceDescription {
+  @apply text-slate-500 text-sm leading-relaxed mb-6 flex-1;
 }
 
-.serviceDetails {
-  @apply font-medium text-slate-500 text-sm mt-0.5;
+.metaInfo {
+  @apply flex items-center gap-2 text-xs font-bold text-indigo-600 mb-6 bg-indigo-50/50 w-fit px-3 py-1 rounded-lg border border-indigo-100;
+}
+
+.actionButton {
+  @apply w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-indigo-600 transition-colors flex items-center justify-center gap-2 mt-auto;
+}
+
+.actionButton:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
 
 .chevronIcon {
@@ -81,5 +92,5 @@
 }
 
 .backButton {
-  @apply text-blue-900 underline;
+  @apply text-slate-500 font-medium hover:text-slate-800 flex items-center gap-1 transition-colors no-underline;
 }
