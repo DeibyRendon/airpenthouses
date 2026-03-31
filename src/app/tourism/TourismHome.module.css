@@ -1,0 +1,67 @@
+.main {
+  @apply min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-blue-900 selection:text-white;
+}
+
+.header {
+  @apply fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-slate-200;
+}
+
+.headerContent {
+  @apply max-w-7xl mx-auto px-6 h-20 flex items-center justify-between;
+}
+
+.logo {
+  @apply flex items-center gap-2 hover:opacity-80 transition-opacity;
+}
+
+.logoText {
+  @apply text-2xl tracking-tight text-slate-800 font-light;
+}
+
+.logoBrand {
+  @apply font-extrabold text-slate-900;
+}
+
+.logoSeparator {
+  @apply text-slate-300 font-light mx-2;
+}
+
+.logoModule {
+  @apply text-blue-900 font-medium;
+}
+
+.backButton {
+  @apply flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-blue-900 transition-colors bg-slate-100 hover:bg-blue-50 px-4 py-2 rounded-full;
+}
+
+.heroSection {
+  @apply pt-36 pb-16 px-6 max-w-7xl mx-auto flex flex-col items-center text-center;
+}
+
+.heroIconWrapper {
+  @apply w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-slate-200;
+}
+
+.heroIcon {
+  @apply w-8 h-8 text-white;
+}
+
+.heroTitle {
+  @apply text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight max-w-2xl;
+}
+
+.heroSubtitle {
+  @apply text-lg text-slate-500 mb-12 max-w-xl leading-relaxed;
+}
+
+.gateWrapper {
+  @apply w-full max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100;
+}
+
+.footer {
+  @apply w-full bg-slate-900 py-12 text-center mt-12;
+}
+
+.footerText {
+  @apply text-slate-400 text-sm;
+}
