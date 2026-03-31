@@ -1,6 +1,6 @@
 import AppointmentCalendar from "@/components/reservation/AppointmentCalendar";
 import { getReservationSession, getServiceCookie, getBarberServicesAction } from "@/app/actions/reservation";
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default async function CalendarPage() {
   const session = await getReservationSession();
@@ -24,7 +24,6 @@ export default async function CalendarPage() {
       <div className="w-full max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
         <AppointmentCalendar 
           reservationId={session.id} 
-          guestName={session.guest_name} 
           service={selectedService}
         />
       </div>
