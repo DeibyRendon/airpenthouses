@@ -15,7 +15,7 @@ import { getBarberServicesAction } from "@/app/actions/barbershop";
 export default async function AdminDashboard({ 
   searchParams 
 }: { 
-  searchParams: Promise<{ tab?: string }> 
+  readonly searchParams: Promise<{ tab?: string }> 
 }) {
   const isAuth = await verifyAdmin();
   if (!isAuth) {
@@ -140,9 +140,6 @@ export default async function AdminDashboard({
               <div className="flex gap-3">
                 <Link href="/admin/barbershop/barbers" className="bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-50 shadow-sm transition-all">
                   <CalendarCheck className="w-5 h-5 text-indigo-500" /> Gestionar Personal
-                </Link>
-                <Link href="/admin/barbershop/availability" className="bg-white border border-slate-200 text-slate-700 px-5 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-50 shadow-sm transition-all">
-                  <Clock className="w-5 h-5" /> Horarios
                 </Link>
                 <Link href="/admin/barbershop/services/new" className="bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all">
                   <Plus className="w-5 h-5" /> Nuevo Servicio
